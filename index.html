@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="id">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&family=Pacifico&display=swap" rel="stylesheet">
+<head>
+<meta charset="UTF-8">
+<title>For You 💖</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    font-family: 'Courier New', monospace;
+    overflow-x: hidden;
+    color: white;
+
+    background: linear-gradient(-45deg, #ff7aa2, #7aa2ff, #ffb3c6, #8affc1);
+    background-size: 400% 400%;
+    animation: gradientBG 10s ease infinite;
+}
+
+@keyframes gradientBG {
+    0% {background-position: 0% 50%;}
+    50% {background-position: 100% 50%;}
+    100% {background-position: 0% 50%;}
+}
+
+/* ===== LOBBY ===== */
+.lobby {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.4);
+    backdrop-filter: blur(12px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    z-index: 10;
+    transition: 1s;
+}
+
+.lobby h1 {
+    cursor: pointer;
+    font-size: 35px;
+    color: #ffe4ec;
+    text-shadow: 0 0 8px rgba(255,150,180,0.6);
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0%,100% {transform: scale(1);}
+    50% {transform: scale(1.1);}
+}
+
+.lobby.fade-out {
+    opacity: 0;
+    transform: scale(1.1);
+}
+
+/* ===== MAIN ===== */
+.container {
+    display: none;
+    text-align: center;
+    padding: 30px 20px;
+    max-width: 900px;
+    margin: auto;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: 1s;
+}
+
+.container.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+h2 {
+    font-size: 32px;
+    text-shadow: 0 0 15px white;
+}
+
+.typing {
+    display: block;
+    margin: 10px 0;
+}
+
+/* ===== FOTO ===== */
+.gallery {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.photo {
+    width: 110px;
+    background: white;
+    padding: 8px;
+    border-radius: 12px;
+    transition: 0.4s;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    transform: rotate(-2deg);
+    position: relative;
+    cursor: pointer;
+}
+
+.photo:nth-child(2) { transform: rotate(2deg); }
+.photo:nth-child(3) { transform: rotate(-4deg); }
+.photo:nth-child(4) { transform: rotate(3deg); }
+
+.photo img {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.photo:hover {
+    transform: scale(1.15) rotate(0deg);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    z-index: 5;
+}
+
+.photo:hover::after {
+    box-shadow: 0 0 25px rgba(255,150,180,0.6);
+}
+
+/* ===== VIDEO ===== */
+.video-popup {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: 0.4s;
+    z-index: 999;
+}
+
+.video-popup.show {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.video-box {
+    width: 80%;
+    max-width: 600px;
+    position: relative;
+    animation: zoomIn 0.4s ease;
+}
+
+.video-box video {
+    width: 100%;
+    border-radius: 10px;
+}
+
+.close {
+    position: absolute;
+    top: -30px;
+    right: 0;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+@keyframes zoomIn {
+    from { transform: scale(0.7); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+/* ===== HATI ===== */
+.heart {
+    position: fixed;
+    top: -10px;
+    font-size: 20px;
+    animation: fall linear infinite;
+}
+
+@keyframes fall {
+    to {
+        transform: translateY(100vh);
+        opacity: 0;
+    }
+}
+
+/* ===== ENDING ===== */
+.ending {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: 1s;
+    z-index: 9999;
+}
+
+.ending.show {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.ending h1 {
+    font-size: 28px;
+    text-shadow: 0 0 15px pink;
+}
+
+/* confetti */
+.confetti {
+    position: fixed;
+    top: -10px;
+    width: 8px;
+    height: 8px;
+    animation: confettiFall linear forwards;
+}
+
+@keyframes confettiFall {
+    to {
+        transform: translateY(100vh) rotate(720deg);
+        opacity: 0;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<audio id="musik" src="Brisia Jodie - Tabu (Original Soundtrack Merindu Cahaya de Amstel) (Lyric Video) - (320 Kbps).mp3"></audio>
+
+<div class="lobby" id="lobby">
+    <h1 onclick="masuk()">Klik aku ya 💖</h1>
+    <p>(aku ada sesuatu buat kamu...)</p>
+</div>
+
+<div class="container" id="main">
+    <h2>Happy Birthday to Youuu 🎂</h2>
+
+    <p class="typing">Hari ini hari spesial kamu...</p>
+    <p class="typing">Semoga kamu selalu bahagia...</p>
+    <p class="typing">Aku seneng bisa kenal sama kamu 💖</p>
+    <p class="typing">Jangan benci aku ya 🥺</p>
+
+    <div class="gallery">
+        <div class="photo" onclick="bukaVideo('video1.mp4')"><img src="foto1.jpg"></div>
+        <div class="photo" onclick="bukaVideo('video2.mp4')"><img src="foto2.jpg"></div>
+        <div class="photo" onclick="bukaVideo('video3.mp4')"><img src="foto3.jpg"></div>
+        <div class="photo" onclick="bukaVideo('video4.mp4')"><img src="foto4.jpg"></div>
+    </div>
+</div>
+
+<div id="videoPopup" class="video-popup">
+    <div class="video-box">
+        <span class="close" onclick="tutupVideo()">✖</span>
+        <video id="videoPlayer" controls></video>
+    </div>
+</div>
+
+<!-- ENDING -->
+<div id="ending" class="ending">
+    <div>
+        <h1 id="finalText"></h1>
+        <p>Klik untuk ulang 💖</p>
+    </div>
+</div>
+
+<script>
+function masuk() {
+    document.getElementById("musik").play();
+
+    let lobby = document.getElementById("lobby");
+    let main = document.getElementById("main");
+
+    lobby.classList.add("fade-out");
+
+    setTimeout(() => {
+        lobby.style.display = "none";
+        main.style.display = "block";
+        setTimeout(() => main.classList.add("show"), 50);
+    }, 1000);
+
+    startHearts();
+}
+
+function startHearts() {
+    setInterval(() => {
+        let heart = document.createElement("div");
+        heart.innerHTML = "💖";
+        heart.className = "heart";
+        heart.style.left = Math.random() * 100 + "vw";
+        heart.style.animationDuration = (Math.random() * 3 + 2) + "s";
+        document.body.appendChild(heart);
+        setTimeout(() => heart.remove(), 5000);
+    }, 400);
+}
+
+/* VIDEO */
+function bukaVideo(src) {
+    let popup = document.getElementById("videoPopup");
+    let player = document.getElementById("videoPlayer");
+
+    player.src = src;
+    popup.classList.add("show");
+    player.play();
+
+    player.onended = function() {
+        tutupVideo();
+        setTimeout(showEnding, 500);
+    };
+}
+
+function tutupVideo() {
+    let popup = document.getElementById("videoPopup");
+    let player = document.getElementById("videoPlayer");
+
+    popup.classList.remove("show");
+    player.pause();
+    player.src = "";
+}
+
+/* ENDING */
+function showEnding() {
+    let ending = document.getElementById("ending");
+    let text = document.getElementById("finalText");
+
+    ending.classList.add("show");
+    startConfetti();
+
+    let message = "maaf ya :(... 💖";
+    let i = 0;
+
+    function typing() {
+        if(i < message.length) {
+            text.innerHTML += message.charAt(i);
+            i++;
+            setTimeout(typing, 70);
+        }
+    }
+    typing();
+}
+
+/* CONFETTI */
+function startConfetti() {
+    for(let i=0;i<100;i++){
+        let c=document.createElement("div");
+        c.className="confetti";
+        c.style.left=Math.random()*100+"vw";
+        c.style.animationDuration=(Math.random()*3+2)+"s";
+        c.style.background=`hsl(${Math.random()*360},100%,70%)`;
+        document.body.appendChild(c);
+        setTimeout(()=>c.remove(),4000);
+    }
+}
+
+document.getElementById("videoPopup").addEventListener("click", e=> {
+    if(e.target.id==="videoPopup") tutupVideo();
+});
+
+document.getElementById("ending").onclick = () => location.reload();
+</script>
+
+</body>
+</html>
